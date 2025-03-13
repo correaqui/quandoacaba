@@ -1,171 +1,41 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relógio da Próxima Grande Guerra</title>
-    
-    <!-- Estilos -->
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            background-color: #121212;
-            color: white;
-            text-align: center;
-            padding: 20px;
-            max-width: 1920px;
-            margin: auto;
-        }
-        
-        h1, h2 {
-            color: #f2a900;
-        }
-
-        .clock-container {
-            margin: 40px auto;
-            padding: 30px;
-            border: 3px solid red;
-            border-radius: 10px;
-            background: black;
-            display: inline-block;
-            width: 40%;
-        }
-
-        .clock {
-            font-size: 60px;
-            font-weight: bold;
-            color: red;
-        }
-
-        .analysis, .chart-container, .news-panel {
-            margin-top: 40px;
-            padding: 30px;
-            background-color: #1a1a1a;
-            border-radius: 5px;
-            text-align: left;
-            max-width: 1200px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background: #252525;
-            color: white;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #444;
-            padding: 12px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f2a900;
-            color: black;
-        }
-
-        .chart-container {
-            max-width: 800px;
-            margin: auto;
-        }
-
-        .news-panel {
-            max-width: 1200px;
-            margin: auto;
-        }
-
-        .news-panel ul {
-            list-style: none;
-            padding: 0;
-        }
-
-        .news-panel li {
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #252525;
-            border-radius: 5px;
-        }
-    </style>
-    
-    <!-- Biblioteca Chart.js -->
+    <title>Análise Geopolítica e Impacto Econômico</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.1.0"></script>
 </head>
 <body>
+    <header>
+        <h1>Análise Geopolítica Atualizada</h1>
+    </header>
+    <main>
+        <section id="analise-geopolitica">
+            <h2>Última Análise Geopolítica</h2>
+            <p>Este site monitora indicadores globais para estimar a proximidade de um possível conflito mundial, representado pelo "Relógio da Próxima Grande Guerra". Atualmente, o relógio marca <strong>11h45</strong>, indicando um alto risco de conflito. Essa estimativa é baseada em fatores como:</p>
+            <ul>
+                <li><strong>Tensões Políticas:</strong> Escalação de conflitos regionais e disputas entre potências.</li>
+                <li><strong>Movimentações Militares:</strong> Aumento de exercícios militares próximos a zonas de conflito.</li>
+                <li><strong>Declarações Diplomáticas:</strong> Retórica agressiva entre líderes mundiais.</li>
+            </ul>
+            <p>Nosso objetivo é fornecer uma visão atualizada e imparcial sobre o estado das relações internacionais, auxiliando na compreensão dos riscos globais atuais.</p>
+        </section>
+        <section id="noticias">
+            <h2>Últimas Notícias</h2>
+            <div id="news-container"></div>
+        </section>
+        <section id="impacto-economico">
+            <h2>Gráfico de Impacto Econômico</h2>
+            <canvas id="currencyChart"></canvas>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2025 Análise Geopolítica. Todos os direitos reservados.</p>
+    </footer>
 
-    <h1>🕰️ Relógio da Próxima Grande Guerra</h1>
-    <div class="clock-container">
-        <p>Tempo estimado até um grande conflito global:</p>
-        <div class="clock" id="warClock">11h45</div>
-    </div>
-
-    <div class="analysis" id="analysisContent">
-        <h2>📊 Última Análise Geopolítica</h2>
-        <p>Estamos a <strong>15 minutos da meia-noite</strong>, indicando um **alto risco** de um grande conflito global.</p>
-    </div>
-
-    <div class="chart-container">
-        <h2>📈 Impacto Econômico na Guerra</h2>
-        <canvas id="currencyChart"></canvas>
-    </div>
-
-    <div class="news-panel">
-        <h2>📰 Últimas Notícias Geopolíticas</h2>
-        <ul id="newsList"></ul>
-    </div>
-
-    <script>
-        const apiKey = 'SUA_API_NEWS'; // Substitua pela sua chave da API
-        let warMinutes = 45;
-
-        async function fetchNews() {
-            try {
-                let response = await fetch(`https://newsapi.org/v2/everything?q=geopolitics&language=en&sortBy=publishedAt&apiKey=${apiKey}`);
-                let data = await response.json();
-                displayNews(data.articles);
-            } catch (error) {
-                console.error("Erro ao buscar notícias:", error);
-            }
-        }
-
-        function displayNews(articles) {
-            let newsList = document.getElementById("newsList");
-            newsList.innerHTML = "";
-            articles.slice(0, 5).forEach(article => {
-                let listItem = document.createElement("li");
-                listItem.innerHTML = `<strong>${article.title}</strong><br><a href="${article.url}" target="_blank">Leia mais</a>`;
-                newsList.appendChild(listItem);
-            });
-        }
-
-        function updateClock(minutes) {
-            if (minutes > 59) minutes = 59;
-            if (minutes < 30) minutes = 30;
-
-            document.getElementById("warClock").innerText = `11h${minutes}`;
-        }
-
-        function updateCurrencyChart() {
-            let ctx = document.getElementById('currencyChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ["Hoje", "1 Semana", "2 Semanas", "1 Mês"],
-                    datasets: [
-                        { label: "Dólar (USD)", data: [5.50, 6.00, 6.50, 7.00], borderColor: "blue", fill: false },
-                        { label: "Euro (EUR)", data: [6.00, 6.80, 7.50, 8.20], borderColor: "green", fill: false },
-                        { label: "Real (BRL)", data: [1.00, 0.85, 0.70, 0.60], borderColor: "red", fill: false }
-                    ]
-                }
-            });
-        }
-
-        fetchNews();
-        updateCurrencyChart();
-        setInterval(fetchNews, 21600000); // Atualiza as notícias a cada 6 horas
-    </script>
-
+    <script src="script.js"></script>
 </body>
 </html>
